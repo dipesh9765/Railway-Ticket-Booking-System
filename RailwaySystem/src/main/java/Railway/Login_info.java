@@ -5,6 +5,13 @@
 package Railway;
 
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 
@@ -14,15 +21,34 @@ import javax.swing.JOptionPane;
  */
 public class Login_info extends javax.swing.JFrame {
 
+    public static String USERNAME = null;
     /**
      * Creates new form Login_info
      */
-    
-    String Admin ="";
-    String Pass ="";
-    
+    String Admin = "";
+    String Pass = "";
+
     public Login_info() {
         initComponents();
+        Connect();
+    }
+
+    Connection con;
+    PreparedStatement pat;
+    ResultSet rs;
+
+    public void Connect() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbcdemo", "root", "Royal@9765");
+            System.out.println("Connected securely");
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     /**
@@ -160,26 +186,34 @@ public class Login_info extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-            // TODO add your handling code here:
-            
-            if(txtUserName.getText().trim().isEmpty() && txtPass.getText().trim().isEmpty()){
-                JOptionPane.showMessageDialog(this,"Please Enter Value ");
+        // TODO add your handling code here:
+        Admin = txtUserName.getText().trim();
+        Pass = txtPass.getText().trim();
+        if (Admin.length() > 0 && Pass.length() > 0) {
+            try {
+                pat = con.prepareStatement("Select * from logininfo Where username = ? and password = ? ");
+                pat.setString(1, Admin);
+                pat.setString(2, Pass);
+
+                rs = pat.executeQuery();
+                if (rs.next()) {
+                    this.hide();
+                    Main m = new Main();
+                    USERNAME = Admin;
+                    System.out.println(USERNAME);
+                    m.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Username and password incorrect");
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Login_info.class.getName()).log(Level.SEVERE, null, ex);
             }
-            Admin = txtUserName.getText().trim();
-            Pass = txtPass.getText().trim();
-            
-            
-            
-            if(txtUserName.getText().trim().equals("Admin") && txtPass.getText().trim().equals("123")){
-                Main m = new Main();
-                
-                this.hide();
-                m.setVisible(true);
-            }
-            else{
-                JOptionPane.showMessageDialog(this,"Entered Credentials are incorrect");
-            }
-            
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Credentials are null!");
+        }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void registerClickActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerClickActionPerformed
@@ -241,4 +275,11 @@ public class Login_info extends javax.swing.JFrame {
     private javax.swing.JPasswordField txtPass;
     private javax.swing.JTextField txtUserName;
     // End of variables declaration//GEN-END:variables
+
+    class getUser {
+
+        public static String get() {
+            return USERNAME;
+        }
+    }
 }

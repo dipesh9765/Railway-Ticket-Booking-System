@@ -4,14 +4,18 @@
  */
 package Railway;
 
-import ConnectionImport;
+import Railway.ConnectInit;
+import Railway.Login_info;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,10 +28,13 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         initComponents();
-        Connect(); 
+        Connect();
         LoadStart();
         LoadEnd();
+//        setValues();
+
     }
+    public int dist = 0;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -42,7 +49,6 @@ public class Main extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        trainName = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -55,11 +61,12 @@ public class Main extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         trainNo = new javax.swing.JTextField();
-        totalA = new javax.swing.JTextField();
-        price = new javax.swing.JTextField();
         classS = new javax.swing.JComboBox<>();
         fromCombo = new javax.swing.JComboBox<>();
         endC = new javax.swing.JComboBox<>();
+        total = new javax.swing.JLabel();
+        price = new javax.swing.JLabel();
+        trainName = new javax.swing.JLabel();
         getUsername = new javax.swing.JLabel();
 
         jLabel1.setFont(new java.awt.Font("Century", 1, 18)); // NOI18N
@@ -113,12 +120,26 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        classS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Class", "2S", "SL", "3AC", "2AC", "1AC" }));
+        classS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Class", "2S", "SL", "3AC", "1AC" }));
+        classS.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                classSFocusLost(evt);
+            }
+        });
         classS.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 classSActionPerformed(evt);
             }
         });
+
+        total.setFont(new java.awt.Font("Book Antiqua", 1, 14)); // NOI18N
+        total.setText("Total Amount");
+
+        price.setFont(new java.awt.Font("Book Antiqua", 1, 14)); // NOI18N
+        price.setText("Price");
+
+        trainName.setFont(new java.awt.Font("Book Antiqua", 1, 14)); // NOI18N
+        trainName.setText(" ");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -140,19 +161,19 @@ public class Main extends javax.swing.JFrame {
                             .addComponent(jLabel9))
                         .addGap(238, 238, 238)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(classS, 0, 158, Short.MAX_VALUE)
+                            .addComponent(classS, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(trainNo)
                             .addComponent(dateC, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(PNR)
-                            .addComponent(trainName)
-                            .addComponent(totalA)
-                            .addComponent(price)
                             .addComponent(fromCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(endC, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(endC, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(trainName, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(214, 214, 214)
                         .addComponent(insertV, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,10 +186,10 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(trainNo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(trainName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(trainName))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(16, 16, 16)
@@ -184,18 +205,18 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
                     .addComponent(classS, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(20, 20, 20)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(22, 22, 22)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(price))
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
                     .addComponent(dateC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
-                    .addComponent(totalA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(total))
                 .addGap(46, 46, 46)
                 .addComponent(insertV)
                 .addGap(18, 18, 18))
@@ -226,7 +247,7 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(getUsername))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -239,37 +260,74 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_classSActionPerformed
 
-    private void insertVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertVActionPerformed
+    private void classSFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_classSFocusLost
         // TODO add your handling code here:
-        this.hide();
-        Ticket t = new Ticket();
-        t.setVisible(true);
 
-    }//GEN-LAST:event_insertVActionPerformed
+        String s = (String) classS.getSelectedItem();
+        int pass = Integer.parseInt(total.getText());
+        int Price = getPrice(s, dist);
+        price.removeAll();
+        total.removeAll();
+        price.setText(Integer.toString(Price));
+        int totalP = Price * pass;
+        System.out.println(totalP);
+        total.setText(Integer.toString(totalP));
+    }//GEN-LAST:event_classSFocusLost
 
     private void trainNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trainNoActionPerformed
         // TODO add your handling code here:
-
-
     }//GEN-LAST:event_trainNoActionPerformed
 
     private void trainNoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_trainNoFocusLost
         // TODO add your handling code here:
-        String train_no = trainNo.getSelectedText();
+        //        String train_no = trainNo.getSelectedText();
+        String train_no = trainNo.getText();
         try {
-
-            pat = con.prepareStatement("Select train_name from trains where train_no = ? ");
-
+            trainName.removeAll();
+            pat = con.prepareStatement("Select * from trains Where train_no = ? ");
             pat.setString(1, train_no);
             rs = pat.executeQuery();
-            System.out.println(rs.getString(2));
 
-            trainName.setText(rs.getString(1));
+            System.out.println("This is Output");
+            while (rs.next()) {
+                trainName.setText(rs.getString(2));
+                fromCombo.getModel().setSelectedItem(rs.getString(3));
+                endC.getModel().setSelectedItem(rs.getString(4));
+                dist = Integer.parseInt(rs.getString(5));
+                System.out.println("Distance : " + dist);
+
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }//GEN-LAST:event_trainNoFocusLost
+
+    private void insertVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertVActionPerformed
+        // TODO add your handling code here:
+        this.hide();
+        Ticket t = new Ticket();
+        t.setVisible(true);
+    }//GEN-LAST:event_insertVActionPerformed
+
+    private int getPrice(String s, int d) {
+        double calcPrice = d;
+        double _2s = 0.35, sl = 0.60, _3ac = 1.58, _1ac = 3.73;
+//        Select Class, 2S, SL, 3AC, 1AC
+        if (s == "2S") {
+            calcPrice = d * _2s;
+        } else if (s == "SL") {
+            calcPrice = d * sl;
+        } else if (s == "3AC") {
+            calcPrice = d * _3ac;
+        } else if (s == "1AC") {
+            calcPrice = d * _1ac;
+        } else {
+            JOptionPane.showMessageDialog(this, "Please Select the class ");
+        }
+
+        return (int) calcPrice;
+    }
 
     /**
      * @param args the command line arguments
@@ -277,20 +335,23 @@ public class Main extends javax.swing.JFrame {
 //    Connecting SQL Database;
     Connection con;
     PreparedStatement pat;
-    ResultSet rs; 
-     public void Connect() {
+    ResultSet rs, ps, ds;
+
+    public void Connect() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbcdemo", "root", "Royal@9765");
             System.out.println("Connected securely");
 
+//            getUsername.setText(getUser.get());
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    } 
+    }
+
     public void LoadStart() {
         try {
 
@@ -377,9 +438,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField price;
-    private javax.swing.JTextField totalA;
-    private javax.swing.JTextField trainName;
+    private javax.swing.JLabel price;
+    private javax.swing.JLabel total;
+    private javax.swing.JLabel trainName;
     private javax.swing.JTextField trainNo;
     // End of variables declaration//GEN-END:variables
 }

@@ -229,7 +229,7 @@ public class Ticket extends   javax.swing.JFrame  {
 
 //    set Values
     private void setValues() {
-        String s = "100015";
+        String s = "100016";
         try {
             pat = con.prepareStatement("Select * from passenger where PNR =  " + s);
             rs = pat.executeQuery();

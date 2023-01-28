@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8ff69a03-29d1-4231-a6a0-4fcd985427c0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/RailwaySystem/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RailwaySystem/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RailwaySystem/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RailwaySystem/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RailwaySystem/.idea/vcs.xml" afterDir="false" />
-    </list>
+    <list default="true" id="8ff69a03-29d1-4231-a6a0-4fcd985427c0" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
