@@ -4,22 +4,22 @@
  */
 package Railway;
 
-import java.awt.Color;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author HP
  */
-public class Login_info extends javax.swing.JFrame {
+public final class Login_info extends javax.swing.JFrame {
 
     public static String USERNAME = null;
     /**
@@ -43,9 +43,7 @@ public class Login_info extends javax.swing.JFrame {
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbcdemo", "root", "Royal@9765");
             System.out.println("Connected securely");
 
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
+        } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -193,15 +191,13 @@ public class Login_info extends javax.swing.JFrame {
             try {
                 pat = con.prepareStatement("Select * from logininfo Where username = ? and password = ? ");
                 pat.setString(1, Admin);
-                pat.setString(2, Pass);
+                pat.setString(2, Pass); 
 
                 rs = pat.executeQuery();
                 if (rs.next()) {
                     this.hide();
-                    Main m = new Main();
-                    USERNAME = Admin;
-                    System.out.println(USERNAME);
-                    m.setVisible(true);
+
+                    new Main(Admin).setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(null, "Username and password incorrect");
                 }
@@ -217,8 +213,7 @@ public class Login_info extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void registerClickActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerClickActionPerformed
-        // TODO add your handling code here:
-//        registerClick.setBorder();
+
         Register r = new Register();
         this.hide();
         r.setVisible(true);
@@ -244,22 +239,16 @@ public class Login_info extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Login_info.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Login_info.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Login_info.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Login_info.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
+        //</editor-fold>
+
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login_info().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Login_info().setVisible(true);
         });
     }
 
@@ -276,10 +265,4 @@ public class Login_info extends javax.swing.JFrame {
     private javax.swing.JTextField txtUserName;
     // End of variables declaration//GEN-END:variables
 
-    class getUser {
-
-        public static String get() {
-            return USERNAME;
-        }
-    }
 }
